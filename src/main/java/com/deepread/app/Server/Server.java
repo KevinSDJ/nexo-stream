@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Server {
-    private Map<String,Socket> sockets= new ConcurrentHashMap<>();
+    private Map<String,Socket> connections= new ConcurrentHashMap<>();
     private ExecutorService pool = Executors.newFixedThreadPool(10);
 
     public Server( int port){
@@ -22,7 +22,7 @@ public class Server {
                 // creo un id unico
                 String shortHash = UUID.randomUUID().toString().replace("-", "");
                 //guardo el cliente conectado
-                sockets.put(shortHash, cliente);
+                connections.put(shortHash, cliente);
                 //ejecuto el hilo del cliente
                 pool.execute(new HandleClient(shortHash,cliente,this::removeClient));
             }
@@ -36,7 +36,7 @@ public class Server {
     }
 
     public void removeClient(String id){
-        sockets.remove(id);
+        connections.remove(id);
     }
 }
 

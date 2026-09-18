@@ -10,9 +10,9 @@ import java.net.UnknownHostException;
 
 public class Client {
     private Socket s = null;
-    private BufferedReader inTeclado = null;
-    private DataInputStream in = null;
-    private DataOutputStream out = null;
+    private BufferedReader inKeyword = null;
+    private DataInputStream inData = null;
+    private DataOutputStream outData = null;
 
     public Client(String addr, int port)
     {
@@ -22,10 +22,10 @@ public class Client {
             System.out.println("Connected");
 
             // captar datos de terminal
-            inTeclado = new BufferedReader(new InputStreamReader(System.in));
+            inKeyword = new BufferedReader(new InputStreamReader(System.in));
 
             // Sends output to the socket
-            out = new DataOutputStream(s.getOutputStream());
+            outData = new DataOutputStream(s.getOutputStream());
         }
         catch (UnknownHostException u) {
             System.out.println(u);
@@ -42,9 +42,9 @@ public class Client {
         // Keep reading until "Over" is input
         while (!m.equals("Over")) {
             try {
-                m = inTeclado.readLine();
-                out.writeUTF(m);
-                out.flush();
+                m = inKeyword.readLine();
+                outData.writeUTF(m);
+                outData.flush();
             }
             catch (IOException i) {
                 System.out.println(i);
@@ -54,8 +54,8 @@ public class Client {
 
         // Close the connection
         try {
-            inTeclado.close();
-            out.close();
+            inKeyword.close();
+            outData.close();
             s.close();
         }
         catch (IOException i) {
@@ -64,6 +64,6 @@ public class Client {
     }
 
     public static void main(String[] args) {
-        Client c = new Client("127.0.0.1", 5000);
+        new Client("127.0.0.1", 5000);
     }
 }
