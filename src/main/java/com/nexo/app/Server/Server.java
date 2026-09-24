@@ -1,4 +1,4 @@
-package com.deepread.app.Server;
+package com.nexo.app.Server;
 
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -29,6 +29,7 @@ public class Server {
             
         } catch (Exception e) {
             log("Error: " + e.getMessage());
+            pool.shutdown();
         }
     }
     public void log(String str){

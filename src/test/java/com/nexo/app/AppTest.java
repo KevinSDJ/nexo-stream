@@ -1,4 +1,4 @@
-package com.deepread.app;
+package com.nexo.app;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

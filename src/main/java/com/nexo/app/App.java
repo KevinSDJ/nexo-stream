@@ -1,4 +1,4 @@
-package com.deepread.app;
+package com.nexo.app;
 
 public class App {
     public static void main(String[] args) {

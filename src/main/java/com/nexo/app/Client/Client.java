@@ -1,4 +1,4 @@
-package com.deepread.app.Client;
+package com.nexo.app.Client;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
