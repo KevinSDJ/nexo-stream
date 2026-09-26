@@ -1,7 +1,10 @@
 package com.nexo.app;
 
+import com.nexo.app.Server.Server;
+
 public class App {
     public static void main(String[] args) {
-        System.out.println("Nothing bitch");
+        Server server=new Server();
+        server.run();
     }
 }

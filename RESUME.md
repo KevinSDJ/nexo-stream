@@ -1,25 +1,24 @@
-# Resumen del proyecto deep-read
+# Resumo do projeto deep-read
 
-## 1. Idea general
+## 1. Ideia geral
 
-Este proyecto es un ejercicio de aprendizaje en Java orientado a comprender cómo funcionan los sockets, la comunicación entre procesos y el manejo de conexiones concurrentes con hilos.
+Este projeto é um exercício de aprendizagem em Java voltado a compreender como funcionam os sockets, a comunicação entre processos e o gerenciamento de conexões concorrentes com threads.
 
-La intención no parece ser construir una aplicación de negocio completa, sino practicar conceptos de red y concurrencia de forma directa, probando cómo un servidor acepta conexiones, crea un hilo por cliente y procesa mensajes enviados desde un cliente.
+A intenção não parece ser construir uma aplicação de negócio completa, mas praticar conceitos de rede e concorrência de forma direta, testando como um servidor aceita conexões, cria uma thread por cliente e processa mensagens enviadas por um cliente.
 
-El README del proyecto deja claro que la idea es "entender conceptos avanzados con sockets" y experimentar con la forma en que un servidor abre puertos, atiende clientes y gestiona conexiones con threads.
+O README do projeto deixa claro que a ideia é "compreender conceitos avançados com sockets" e experimentar como um servidor abre portas, atende clientes e gerencia conexões com threads.
 
----
 
-## 2. Tecnologías y estructura del proyecto
+## 2. Tecnologias e estrutura do projeto
 
-### Tecnologías principales
+### Principais tecnologias
 - Java 17
 - Maven
 - JUnit 5
-- Sockets de Java (`ServerSocket` y `Socket`)
-- Concurrencia con `ExecutorService` y `ThreadPool`
+- Sockets do Java (`ServerSocket` e `Socket`)
+- Concorrência com `ExecutorService` e `ThreadPool`
 
-### Estructura principal
+### Estrutura principal
 
 ```text
 deep-read/
@@ -51,317 +50,317 @@ deep-read/
 
 ---
 
-## 3. Qué se ha construido hasta ahora
+## 3. O que foi construído até agora
 
-### 3.1 Configuración base del proyecto
+### 3.1 Configuração básica do projeto
 
-El archivo `pom.xml` prepara un proyecto Maven con:
+O arquivo `pom.xml` prepara um projeto Maven com:
 - `groupId`: `com.deepread.app`
 - `artifactId`: `deep-read`
-- versión `1.0-SNAPSHOT`
-- Java 17 como nivel de compilación
-- JUnit 5 para pruebas
+- versão `1.0-SNAPSHOT`
+- Java 17 como nível de compilação
+- JUnit 5 para testes
 
-Esto indica que el proyecto está estructurado como una aplicación Java moderna y con soporte para pruebas automatizadas.
+Isso indica que o projeto está estruturado como uma aplicação Java moderna, com suporte a testes automatizados.
 
-### 3.2 Aplicación principal
+### 3.2 Aplicação principal
 
-El archivo `src/main/java/com/deepread/app/App.java` es un punto de entrada muy simple:
+O arquivo `src/main/java/com/deepread/app/App.java` é um ponto de entrada bem simples:
 
-- imprime por consola: `Nothing bitch`
+- imprime no console: `Nothing bitch`
 
-En otras palabras, esta clase todavía funciona como una base o prueba muy básica y no representa la lógica principal del servidor.
+Em outras palavras, essa classe ainda funciona como uma base ou um teste muito básico e não representa a lógica principal do servidor.
 
 ### 3.3 Cliente TCP
 
-El archivo `src/main/java/com/deepread/app/Client/Client.java` implementa un cliente que:
-- crea un `Socket` hacia `127.0.0.1` y el puerto `5000`
-- lee texto desde la consola
-- lo envía al servidor mediante `DataOutputStream.writeUTF()`
-- sigue enviando mensajes hasta que el usuario escribe `Over`
-- cierra el socket al terminar
+O arquivo `src/main/java/com/deepread/app/Client/Client.java` implementa um cliente que:
+- cria um `Socket` para `127.0.0.1` na porta `5000`
+- lê texto do console
+- envia esse texto ao servidor por meio de `DataOutputStream.writeUTF()`
+- continua enviando mensagens até o usuário digitar `Over`
+- fecha o socket ao terminar
 
-Este cliente es un ejemplo clásico de aplicación de consola que interactúa con un servidor por red.
+Esse cliente é um exemplo clássico de aplicação de console que interage com um servidor pela rede.
 
 ### 3.4 Servidor TCP
 
-El archivo `src/main/java/com/deepread/app/Server/Server.java` contiene la lógica principal del servidor:
-- crea un `ServerSocket` en un puerto determinado
-- escucha conexiones entrantes con `accept()`
-- para cada cliente nuevo genera un identificador único con `UUID`
-- guarda la conexión en un `ConcurrentHashMap<String, Socket>`
-- ejecuta la lógica del cliente en un hilo usando un `ExecutorService` con un pool de 10 hilos
-- elimina la conexión cuando se cierra el cliente
+O arquivo `src/main/java/com/deepread/app/Server/Server.java` contém a lógica principal do servidor:
+- cria um `ServerSocket` em uma porta determinada
+- aguarda conexões recebidas com `accept()`
+- para cada novo cliente, gera um identificador exclusivo com `UUID`
+- armazena a conexão em um `ConcurrentHashMap<String, Socket>`
+- executa a lógica do cliente em uma thread usando um `ExecutorService` com um pool de 10 threads
+- remove a conexão quando o cliente é encerrado
 
-Esto demuestra una comprensión importante de la concurrencia en redes: cada cliente puede atenderse en paralelo sin bloquear el servidor principal.
+Isso demonstra uma compreensão importante de concorrência em redes: cada cliente pode ser atendido em paralelo sem bloquear o servidor principal.
 
-### 3.5 Manejador de cada cliente
+### 3.5 Manipulador de cada cliente
 
-El archivo `src/main/java/com/deepread/app/Server/HandleClient.java` define un `Runnable` que representa la atención de un cliente específico:
-- abre `DataInputStream` desde el socket
-- lee mensajes en un bucle
-- imprime cada mensaje recibido
-- se detiene cuando el mensaje es `Over`
-- cierra la conexión y notifica al servidor para eliminarlo
+O arquivo `src/main/java/com/deepread/app/Server/HandleClient.java` define um `Runnable` que representa o atendimento de um cliente específico:
+- abre um `DataInputStream` a partir do socket
+- lê mensagens em um loop
+- imprime cada mensagem recebida
+- para quando a mensagem é `Over`
+- fecha a conexão e notifica o servidor para removê-la
 
-Es una lógica muy básica, pero efectiva para entender el patrón: un servidor acepta conexiones y asigna a cada cliente un hilo que procesa los datos.
+É uma lógica bem básica, mas eficaz para entender o padrão: um servidor aceita conexões e atribui a cada cliente uma thread que processa os dados.
 
 ---
 
-## 4. Qué está funcionando como aprendizaje
+## 4. O que já está funcionando como aprendizagem
 
-Hasta el momento se ha logrado:
-- configurar un proyecto Maven en Java
-- crear una aplicación con sockets
-- construir un servidor que acepta múltiples conexiones
-- procesar clientes en paralelo mediante threads
-- usar identificadores únicos por conexión
-- mantener un seguimiento de clientes conectados
-- crear un cliente con entrada por consola para enviar datos
+Até agora, foi possível:
+- configurar um projeto Maven em Java
+- criar uma aplicação com sockets
+- construir um servidor que aceita múltiplas conexões
+- processar clientes em paralelo por meio de threads
+- usar identificadores exclusivos por conexão
+- acompanhar os clientes conectados
+- criar um cliente com entrada pelo console para enviar dados
 
-En términos de aprendizaje, este proyecto sirve como base práctica para comprender:
-- puertos
+Em termos de aprendizagem, este projeto serve como base prática para compreender:
+- portas
 - sockets
-- I/O de red
-- hilos y concurrencia
-- trabajo con streams de datos
-- arquitectura cliente-servidor
+- I/O de rede
+- threads e concorrência
+- trabalho com streams de dados
+- arquitetura cliente-servidor
 
 ---
 
-## 5. Lo que aún no está terminado o está muy básico
+## 5. O que ainda não está pronto ou está muito básico
 
-Aunque el proyecto ya tiene una estructura funcional, todavía es un ejercicio muy inicial. Hay varias limitaciones evidentes:
+Embora o projeto já tenha uma estrutura funcional, ainda é um exercício bem inicial. Há várias limitações evidentes:
 
-- no hay protocolo definido más allá de `Over`
-- no hay serialización ni manejo de mensajes complejos
-- no hay separación clara de responsabilidades por capas
-- no hay validación de errores robusta
-- no hay registro de eventos más formal
-- no hay tests reales de servidor/cliente
-- no hay lógica de negocio ni persistencia
-- no hay shutdown ordenado del servidor
+- não há um protocolo definido além de `Over`
+- não há serialização nem gerenciamento de mensagens complexas
+- não há uma separação clara das responsabilidades em camadas
+- não há validação robusta de erros
+- não há um registro de eventos mais formal
+- não há testes reais do servidor/cliente
+- não há lógica de negócio nem persistência
+- não há um encerramento ordenado do servidor
 
-Este proyecto parece estar más enfocado en aprendizaje y experimentación que en una aplicación lista para producción.
-
----
-
-## 6. Evaluación general
-
-### Fortalezas
-- comprensión práctica de sockets en Java
-- uso correcto de hilos y pool de ejecución
-- estructura simple y legible
-- una base útil para ampliar más adelante
-- buen punto de partida para introducir protocolos de comunicación
-
-### Oportunidades de mejora
-- implementar una arquitectura más clara (cliente, servidor, protocolo, lógica de negocio)
-- agregar pruebas reales de integración
-- manejar mensajes con una clase de protocolo o JSON
-- soportar desconexiones y errores con mayor control
-- documentar el flujo completo de la comunicación
-- añadir una interfaz más real o una API REST/Socket más compleja
+Este projeto parece estar mais voltado à aprendizagem e à experimentação do que a uma aplicação pronta para produção.
 
 ---
 
-## 7. Conclusión
+## 6. Avaliação geral
 
-Este proyecto refleja un inicio muy sólido en la práctica de redes en Java. Lo más importante es que ya se ha logrado construir un servidor y un cliente funcionales a nivel básico, usando conceptos esenciales de sockets y concurrencia.
+### Pontos fortes
+- compreensão prática de sockets em Java
+- uso correto de threads e de um pool de execução
+- estrutura simples e legível
+- uma base útil para expandir mais adiante
+- bom ponto de partida para introduzir protocolos de comunicação
 
-Se trata de un proyecto de aprendizaje experimental, con una base muy útil para continuar avanzando hacia:
-- comunicación más compleja entre clientes
-- mensajes estructurados
-- multiusuario real
-- pruebas de integración
-- y eventualmente una aplicación más robusta y profesional.
-
-En resumen: hasta ahora has construido una base sólida para estudiar y experimentar con programación cliente-servidor en Java, especialmente en la parte de sockets y hilos.
-
----
-
-## 7.1 Objetivo de aprendizaje profundo: construir sistemas robustos con concurrencia real
-
-Este proyecto debe dejar de verse solo como un ejercicio de sockets y empezar a funcionar como una ruta de aprendizaje profundo para construir sistemas concurrentes y resilientes.
-
-La meta no es simplemente "hacer que dos clientes hablen". La meta es que al final puedas construir software que soporte:
-- cientos o miles de conexiones simultáneas
-- mensajes en tiempo real sin bloquear el sistema completo
-- manejo correcto de recursos compartidos
-- tolerancia a fallos y desconexiones
-- pruebas de carga y comportamiento bajo presión
-- diseño de software claro, mantenible y escalable
-
-En otras palabras, este proyecto debe servirte para consolidar tres habilidades clave:
-
-### 1. Dominio de la concurrencia
-Debes comprender bien cómo funciona el modelo de hilos, pools, sincronización, colas y coordinación entre tareas. No basta con usar `Thread` o `ExecutorService`; hay que entender:
-- cuándo un recurso compartido necesita sincronización
-- cómo evitar race conditions
-- qué pasa cuando varios clientes modifican el mismo estado al mismo tiempo
-- cómo se diseña un sistema para que no se bloquee bajo carga
-
-### 2. Diseño de sistemas robustos
-La calidad real de un sistema no está en que compile, sino en que resista fallas y siga funcionando. Para esto debes practicar:
-- manejo correcto de excepciones
-- cierre ordenado de conexiones
-- limpieza de recursos
-- reintentos y recuperación ante errores de red
-- observabilidad con logs y métricas
-- aislamiento entre módulos para que un fallo no derrumbe todo
-
-### 3. Pensamiento de ingeniería de software
-El desarrollo profesional requiere más que escribir código. Debes entrenarte en:
-- arquitectura por capas
-- separación de responsabilidades
-- testing real de comportamiento
-- diseño para evolución
-- análisis de rendimiento y cuello de botella
-- decisiones que prioricen claridad, mantenibilidad y escala
-
-### Cómo convertir este proyecto en un ejercicio profundo
-
-Para que este aprendizaje sea serio y útil, cada etapa debe agregarte una capacidad técnica concreta:
-
-1. Baseline simple: un servidor con un cliente y un mensaje básico.
-2. Concurrencia: atender varios clientes simultáneamente con hilos.
-3. Estado compartido: gestionar conexiones, sesiones y recursos compartidos de forma segura.
-4. Robustez: manejo de errores, desconexiones y limpieza de recursos.
-5. Protocolos: definir mensajes estructurados, no texto libre.
-6. Observabilidad: registrar eventos, latencias y errores.
-7. Pruebas: ejecutar test de integración y de carga.
-8. Escalabilidad: preparar el sistema para crecer horizontalmente.
-9. Productización: añadir seguridad, autenticación, persistencia y monitoreo.
-
-Este proyecto debe funcionar como una especie de laboratorio de ingeniería: cada cambio no solo añade funcionalidad, sino que entrena tu capacidad para pensar como un arquitecto de sistemas concurrentes.
+### Oportunidades de melhoria
+- implementar uma arquitetura mais clara (cliente, servidor, protocolo, lógica de negócio)
+- adicionar testes reais de integração
+- lidar com mensagens usando uma classe de protocolo ou JSON
+- oferecer mais controle sobre desconexões e erros
+- documentar o fluxo completo da comunicação
+- adicionar uma interface mais real ou uma API REST/Socket mais complexa
 
 ---
 
-## 8. Recomendaciones para convertirlo en una aplicación de chat en tiempo real, escalable y comercialmente útil
+## 7. Conclusão
 
-Si la meta es evolucionar este proyecto desde un ejercicio técnico hacia una aplicación de chat real y usable en producción, hay varios cambios clave que conviene hacer.
+Este projeto representa um início muito sólido na prática de redes em Java. O mais importante é que já foi possível construir um servidor e um cliente funcionais em nível básico, usando conceitos essenciais de sockets e concorrência.
 
-### 8.1 Reemplazar sockets crudos por un protocolo estructurado
+Trata-se de um projeto experimental de aprendizagem, com uma base muito útil para continuar avançando em direção a:
+- comunicação mais complexa entre clientes
+- mensagens estruturadas
+- suporte real a múltiplos usuários
+- testes de integração
+- e, eventualmente, uma aplicação mais robusta e profissional.
 
-El ejemplo actual solo envia texto plano y usa `Over` como fin de mensaje. Eso funciona para aprender, pero para una app comercial no es suficiente.
+Em resumo: até agora, você construiu uma base sólida para estudar e experimentar a programação cliente-servidor em Java, especialmente na parte de sockets e threads.
 
-Se recomienda:
-- definir un protocolo de mensajes con formato JSON
+---
+
+## 7.1 Objetivo de aprendizagem aprofundada: construir sistemas robustos com concorrência real
+
+Este projeto deve deixar de ser visto apenas como um exercício de sockets e começar a funcionar como um caminho de aprendizagem aprofundada para construir sistemas concorrentes e resilientes.
+
+A meta não é simplesmente "fazer dois clientes conversarem". A meta é que, ao final, você consiga construir um software que suporte:
+- centenas ou milhares de conexões simultâneas
+- mensagens em tempo real sem bloquear o sistema inteiro
+- gerenciamento correto de recursos compartilhados
+- tolerância a falhas e desconexões
+- testes de carga e de comportamento sob pressão
+- design de software claro, fácil de manter e escalável
+
+Em outras palavras, este projeto deve ajudar você a consolidar três habilidades essenciais:
+
+### 1. Domínio da concorrência
+Você deve compreender bem como funciona o modelo de threads, pools, sincronização, filas e coordenação entre tarefas. Não basta usar `Thread` ou `ExecutorService`; é preciso entender:
+- quando um recurso compartilhado precisa de sincronização
+- como evitar condições de corrida
+- o que acontece quando vários clientes modificam o mesmo estado ao mesmo tempo
+- como projetar um sistema para que ele não fique bloqueado sob carga
+
+### 2. Design de sistemas robustos
+A qualidade real de um sistema não está em ele compilar, mas em resistir a falhas e continuar funcionando. Para isso, você deve praticar:
+- tratamento correto de exceções
+- encerramento ordenado das conexões
+- liberação de recursos
+- novas tentativas e recuperação de erros de rede
+- observabilidade com logs e métricas
+- isolamento entre módulos para que uma falha não derrube tudo
+
+### 3. Pensamento de engenharia de software
+O desenvolvimento profissional exige mais do que escrever código. Você deve treinar:
+- arquitetura em camadas
+- separação de responsabilidades
+- testes reais de comportamento
+- design voltado à evolução
+- análise de desempenho e de gargalos
+- decisões que priorizem clareza, facilidade de manutenção e escala
+
+### Como transformar este projeto em um exercício aprofundado
+
+Para que essa aprendizagem seja séria e útil, cada etapa deve acrescentar uma capacidade técnica concreta:
+
+1. Base simples: um servidor com um cliente e uma mensagem básica.
+2. Concorrência: atender vários clientes simultaneamente com threads.
+3. Estado compartilhado: gerenciar conexões, sessões e recursos compartilhados com segurança.
+4. Robustez: tratamento de erros, desconexões e liberação de recursos.
+5. Protocolos: definir mensagens estruturadas, em vez de texto livre.
+6. Observabilidade: registrar eventos, latências e erros.
+7. Testes: executar testes de integração e de carga.
+8. Escalabilidade: preparar o sistema para crescer horizontalmente.
+9. Transformação em produto: adicionar segurança, autenticação, persistência e monitoramento.
+
+Este projeto deve funcionar como uma espécie de laboratório de engenharia: cada mudança não apenas adiciona funcionalidade, mas também treina sua capacidade de pensar como um arquiteto de sistemas concorrentes.
+
+---
+
+## 8. Recomendações para transformá-lo em um aplicativo de chat em tempo real, escalável e comercialmente útil
+
+Se a meta é evoluir este projeto de um exercício técnico para um aplicativo de chat real e utilizável em produção, há várias mudanças importantes a fazer.
+
+### 8.1 Substituir sockets brutos por um protocolo estruturado
+
+O exemplo atual envia apenas texto puro e usa `Over` como fim de mensagem. Isso funciona para aprender, mas não é suficiente para um aplicativo comercial.
+
+Recomenda-se:
+- definir um protocolo de mensagens em formato JSON
 - incluir campos como `type`, `userId`, `channelId`, `timestamp`, `payload`, `messageId`
 - separar eventos como `CONNECT`, `DISCONNECT`, `MESSAGE`, `TYPING`, `JOIN_ROOM`, `LEAVE_ROOM`
 
-Esto permite escalar la aplicación y facilita la integración con frontend, mobile o APIs.
+Isso permite escalar o aplicativo e facilita a integração com frontend, dispositivos móveis ou APIs.
 
-### 8.2 Introducir una arquitectura por capas
+### 8.2 Introduzir uma arquitetura em camadas
 
-La lógica actual combina todas las responsabilidades en el servidor y el manejador del cliente. Para una solución comercial, conviene separar claramente:
-- `domain`: modelos y reglas del negocio
-- `service`: lógica de chat, usuarios, salas, permisos
-- `repository`: almacenamiento de usuarios, mensajes, sesiones
-- `network`: manejo de conexiones y sockets
-- `api`: endpoints o eventos para clientes
+A lógica atual combina todas as responsabilidades no servidor e no manipulador do cliente. Para uma solução comercial, é recomendável separar claramente:
+- `domain`: modelos e regras de negócio
+- `service`: lógica de chat, usuários, salas e permissões
+- `repository`: armazenamento de usuários, mensagens e sessões
+- `network`: gerenciamento de conexões e sockets
+- `api`: endpoints ou eventos para clientes
 
-Esto mejora mantenimiento, pruebas y velocidad de evolución.
+Isso melhora a manutenção, os testes e a velocidade de evolução.
 
-### 8.3 Soportar múltiples usuarios y salas
+### 8.3 Oferecer suporte a vários usuários e salas
 
-La actual estructura admite conexiones, pero no ofrece un modelo de chat completo. Para convertirlo en una app útil, se debe incorporar:
-- usuarios autenticados
-- salas o canales
-- mensajería privada y grupal
-- historial de mensajes
-- presencia en línea/offline
-- notificaciones de lectura/entrega
+A estrutura atual aceita conexões, mas não oferece um modelo completo de chat. Para transformá-la em um aplicativo útil, é necessário incorporar:
+- usuários autenticados
+- salas ou canais
+- mensagens privadas e em grupo
+- histórico de mensagens
+- presença online/offline
+- confirmações de leitura/entrega
 
-Un servidor con un mapa de clientes por sesión y un esquema de salas es la base del producto.
+Um servidor com um mapa de clientes por sessão e uma estrutura de salas é a base do produto.
 
-### 8.4 Capa de persistencia
+### 8.4 Camada de persistência
 
-Para ser útil comercialmente, el chat debe guardar mensajes y usuarios. Se recomienda:
-- base de datos relacional como PostgreSQL o MySQL para usuarios y mensajes
-- Redis para sesiones, presencia y caché de mensajes recientes
-- almacenamiento de archivos si se quiere soporte para multimedia
+Para ser comercialmente útil, o chat deve armazenar mensagens e usuários. Recomenda-se:
+- um banco de dados relacional, como PostgreSQL ou MySQL, para usuários e mensagens
+- Redis para sessões, presença e cache de mensagens recentes
+- armazenamento de arquivos, caso se queira oferecer suporte a conteúdo multimídia
 
-Esto permite recuperar conversaciones, buscar mensajes y mantener continuidad cuando el usuario vuelve a conectarse.
+Isso permite recuperar conversas, pesquisar mensagens e manter a continuidade quando o usuário se reconectar.
 
-### 8.5 Mejorar la escalabilidad con un modelo no bloqueante
+### 8.5 Melhorar a escalabilidade com um modelo não bloqueante
 
-El uso de un `ExecutorService` con un pool es un buen primer paso, pero no es suficiente para una app real con miles de conexiones concurrentes.
+O uso de um `ExecutorService` com um pool é um bom primeiro passo, mas não é suficiente para um aplicativo real com milhares de conexões simultâneas.
 
-Se puede evolucionar hacia:
-- Netty o Vert.x para I/O no bloqueante
-- WebSockets para comunicación bidireccional en navegadores
-- brokers de mensajes como Kafka o RabbitMQ para eventos de chat
-- balanceadores de carga para múltiples instancias del servidor
+É possível evoluir para:
+- Netty ou Vert.x para I/O não bloqueante
+- WebSockets para comunicação bidirecional em navegadores
+- brokers de mensagens, como Kafka ou RabbitMQ, para eventos de chat
+- balanceadores de carga para várias instâncias do servidor
 
-Con esto se evita que el servidor se convierta en un cuello de botella.
+Com isso, evita-se que o servidor se torne um gargalo.
 
-### 8.6 Crear una API de chat con WebSockets
+### 8.6 Criar uma API de chat com WebSockets
 
-La versión comercial de un chat normalmente no se basa solo en sockets TCP con consola. Se recomienda:
+A versão comercial de um chat normalmente não se baseia apenas em sockets TCP com console. Recomenda-se:
 - WebSockets para frontend web
-- protocolo STOMP o mensajes JSON sobre WS
-- conexión segura con TLS
-- autentiación por JWT o sesiones
-- manejo de reconexión automática
+- protocolo STOMP ou mensagens JSON sobre WS
+- conexão segura com TLS
+- autenticação por JWT ou sessões
+- gerenciamento de reconexão automática
 
-Esto hace que la aplicación sea usable en una interfaz real de navegador o móvil.
+Isso torna o aplicativo utilizável em uma interface real de navegador ou dispositivo móvel.
 
-### 8.7 Incluir seguridad y control de acceso
+### 8.7 Incluir segurança e controle de acesso
 
-Si la app va a tener usuarios reales, hay que cuidar la seguridad:
-- autenticación y autorización
-- validación de tokens
-- saneamiento de entrada
-- protección contra abuso, spam y mensajes maliciosos
-- rate limiting por usuario o por IP
-- cifrado en tránsito
+Se o aplicativo tiver usuários reais, é preciso cuidar da segurança:
+- autenticação e autorização
+- validação de tokens
+- sanitização de entrada
+- proteção contra abuso, spam e mensagens maliciosas
+- limitação de taxa por usuário ou por IP
+- criptografia em trânsito
 
-Esto es obligatorio para cualquier producto con una base de clientes real.
+Isso é obrigatório para qualquer produto com uma base real de clientes.
 
-### 8.8 Diseñar para observabilidad y operación
+### 8.8 Projetar para observabilidade e operação
 
-Para que la app sea comercialmente viable, debe poder monitorearse. Se recomienda:
-- logging estructurado
-- métricas de conexiones activas, mensajes por segundo, latencia, errores
-- trazabilidad por usuario y sesión
-- alertas para caídas de servicio o picos inusuales
-- dashboards operativos
+Para que o aplicativo seja comercialmente viável, ele precisa poder ser monitorado. Recomenda-se:
+- logging estruturado
+- métricas de conexões ativas, mensagens por segundo, latência e erros
+- rastreabilidade por usuário e sessão
+- alertas para interrupções do serviço ou picos incomuns
+- dashboards operacionais
 
-Así mismo, necesitara pruebas de integración y pruebas de carga.
+Além disso, serão necessários testes de integração e testes de carga.
 
-### 8.9 Definir un modelo de negocio claro
+### 8.9 Definir um modelo de negócio claro
 
-Un chat productivo no solo debe "mandar mensajes"; debe resolver un problema real. Se puede convertir en una app de:
-- soporte al cliente en tiempo real
-- chat interno para equipos
-- salas de colaboración
-- mensajería privada
-- comunidad o redes sociales
+Um chat produtivo não deve apenas "enviar mensagens"; ele deve resolver um problema real. Ele pode se transformar em um aplicativo de:
+- suporte ao cliente em tempo real
+- chat interno para equipes
+- salas de colaboração
+- mensagens privadas
+- comunidade ou rede social
 
-La clave es definir bien los casos de uso y la experiencia del usuario.
+O segredo é definir bem os casos de uso e a experiência do usuário.
 
-### 8.10 Siguiente roadmap recomendado
+### 8.10 Próximo roadmap recomendado
 
-Una posible evolución realista sería:
+Uma evolução realista poderia ser:
 
-1. Definir un protocolo de mensajes JSON
-2. Migrar la comunicación a WebSockets
-3. Añadir autenticación de usuarios
-4. Crear salas y usuarios
-5. Guardar mensajes en base de datos
-6. Agregar presencia en línea
-7. Gestionar historial y entregas
-8. Implementar escalabilidad horizontal con varios nodos
-9. Añadir métricas, logs y monitoreo
-10. Crear frontend y experiencia de usuario final
+1. Definir um protocolo de mensagens JSON
+2. Migrar a comunicação para WebSockets
+3. Adicionar autenticação de usuários
+4. Criar salas e usuários
+5. Salvar mensagens em um banco de dados
+6. Adicionar presença online
+7. Gerenciar histórico e entregas
+8. Implementar escalabilidade horizontal com vários nós
+9. Adicionar métricas, logs e monitoramento
+10. Criar o frontend e a experiência final do usuário
 
 ---
 
-## 9. Conclusión final
+## 9. Conclusão final
 
-Este proyecto ya tiene la base conceptual correcta para entender los principios de un sistema cliente-servidor en Java, pero todavía se encuentra en una etapa educativa y experimental. Si se quiere llevar más allá, el siguiente gran salto es convertirlo en una arquitectura de chat real, con usuarios, salas, historial, WebSockets, persistencia y capacidad de escalar.
+Este projeto já tem a base conceitual correta para compreender os princípios de um sistema cliente-servidor em Java, mas ainda está em uma etapa educacional e experimental. Se a intenção é levá-lo adiante, o próximo grande passo é transformá-lo em uma arquitetura real de chat, com usuários, salas, histórico, WebSockets, persistência e capacidade de escalar.
 
-La diferencia entre un ejercicio académico y una aplicación comercial no está solo en la lógica del socket, sino en la disciplina de diseño: protocolo, seguridad, persistencia, observabilidad, escalabilidad y un producto con casos de uso claros.
+A diferença entre um exercício acadêmico e um aplicativo comercial não está apenas na lógica do socket, mas também na disciplina de design: protocolo, segurança, persistência, observabilidade, escalabilidade e um produto com casos de uso claros.
 
-Con ese enfoque, este proyecto puede evolucionar de una sencilla práctica de sockets a una solución de chat en tiempo real útil, robusta y preparada para crecer.
+Com esse enfoque, este projeto pode evoluir de uma simples prática de sockets para uma solução de chat em tempo real útil, robusta e preparada para crescer.
